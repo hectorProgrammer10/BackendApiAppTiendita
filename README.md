@@ -1,135 +1,226 @@
-# 🚀 TiendaApp AI Agent Backend (Next.js 16 + Gemini Flash Lite)
+# 🚀 Backend API - Asistente IA de Ventas (TiendaApp)
 
-API backend en producción diseñada para ser alojada en [Vercel](https://vercel.com). Ofrece endpoints para el Agente Inteligente de Negocio de **TiendaApp** impulsado por el modelo **Gemini 3.5 Flash Lite** (`gemini-3.5-flash-lite`).
+[![Next.js](https://img.shields.io/badge/Next.js-16.3.4-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Google Gemini](https://img.shields.io/badge/Model-Gemini%203.5%20Flash%20Lite-orange?style=for-the-badge&logo=google)](https://ai.google.dev/)
+[![Vercel Ready](https://img.shields.io/badge/Deploy-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/)
 
----
+Microservicio backend serverless de alto rendimiento para el **Asistente Inteligente de Negocio y Ventas** de **TiendaApp**. Utiliza el modelo de última generación **Gemini 3.5 Flash Lite** (`gemini-3.5-flash-lite`) mediante el SDK oficial de Google GenAI, optimizado para ejecutarse en [Vercel](https://vercel.com).
 
-## 📋 Variables de Entorno Requeridas
-
-En tu panel de proyecto en Vercel (**Project Settings > Environment Variables**), agrega las siguientes variables:
-
-| Variable | Valor Recomendado / Descripción |
-| :--- | :--- |
-| `GEMINI_API_KEY` | Tu clave de API de Google Gemini (ej. `AIzaSyDfSu5...`) |
-| `GEMINI_MODEL` | `gemini-3.5-flash-lite` |
-
-> ⚠️ **Nota:** El archivo `.env.local` se utiliza únicamente para pruebas en tu entorno local y está excluido de Git por seguridad.
+Repositorio oficial: [hectorProgrammer10/BackendApiAppTiendita](https://github.com/hectorProgrammer10/BackendApiAppTiendita.git)
 
 ---
 
-## 🚢 Pasos para Desplegar en Vercel
+## 🎯 Características Principales
 
-### Opción 1: Despliegue con Vercel CLI (Más rápido)
-1. Abre tu terminal en la carpeta `backend`:
-   ```bash
-   cd backend
-   ```
-2. Ejecuta el asistente de Vercel:
-   ```bash
-   npx vercel
-   ```
-   - Responde `Y` para configurar el proyecto.
-   - Selecciona el scope/cuenta.
-   - Deja las configuraciones por defecto (Next.js se detecta automáticamente).
-3. Para publicar directamente a producción:
-   ```bash
-   npx vercel --prod
-   ```
-4. Agrega las variables de entorno en el panel web de Vercel o con el CLI:
-   ```bash
-   npx vercel env add GEMINI_API_KEY
-   npx vercel env add GEMINI_MODEL
-   ```
-
-### Opción 2: Despliegue con GitHub
-1. Si tienes tu proyecto subido a un repositorio en GitHub (o creas un subrepositorio para el backend):
-2. Ve a [vercel.com/new](https://vercel.com/new) e importa tu repositorio.
-3. En **Root Directory**, selecciona `backend`.
-4. En **Environment Variables**, añade:
-   - `GEMINI_API_KEY`: tu API Key de Gemini.
-   - `GEMINI_MODEL`: `gemini-3.5-flash-lite`.
-5. Haz clic en **Deploy**.
+* ⚡ **Modelo Gemini 3.5 Flash Lite:** Respuestas ultra-rápidas, bajo costo computacional y alta capacidad de razonamiento comercial.
+* 🛡️ **Motor Estricto Anti-Alucinaciones:** 
+  * Instrucciones del sistema que prohíben al modelo inventar ventas, productos o montos.
+  * Utiliza métricas deterministas calculadas previamente en la base de datos del dispositivo (`salesContext`).
+  * Si un producto o periodo no tiene registros, el modelo declara explícitamente qué datos faltan y por qué no puede responder.
+  * Marca automáticamente cualquier proyección o suposición como `[Aproximado / Estimado]`.
+* 💡 **Generación Automática de Insights Comerciales:** Detecta patrones clave (productos estrella, anomalías en demanda, deudas de fiado elevadas) y genera un payload estructurado para que el teléfono lo guarde localmente.
+* 🌐 **CORS Global Habilitado:** Configurado a nivel de edge router en `next.config.ts` y en las rutas API para admitir solicitudes desde la aplicación Android nativa sin bloqueos.
+* ⏱️ **Protección contra Timeouts:** Configuración `maxDuration = 60` para serverless functions en Vercel, garantizando que ninguna respuesta extensa sea interrumpida.
+* 🩺 **Diagnóstico de Salud:** Endpoint `/api/health` para comprobar conectividad, estado de variables de entorno y modelo activo.
 
 ---
 
-## 📡 Endpoints de la API
+## 📁 Estructura del Proyecto
 
-### 1. Health Check
-* **Método:** `GET /api/health`
-* **Descripción:** Comprueba el estado del microservicio y si Gemini está configurado.
-* **Respuesta Exitosa (200 OK):**
-  ```json
-  {
-    "status": "ok",
-    "service": "tienda-agent-api",
-    "timestamp": "2026-09-02T20:00:00.000Z",
-    "model": "gemini-3.5-flash-lite",
-    "geminiConfigured": true,
-    "environment": "production"
-  }
-  ```
+```text
+backend/
+├── app/
+│   ├── api/
+│   │   ├── chat/
+│   │   │   └── route.ts        # Endpoint principal POST /api/chat (Node.js runtime, maxDuration: 60)
+│   │   └── health/
+│   │       └── route.ts        # Endpoint de diagnóstico GET /api/health
+│   ├── favicon.ico
+│   ├── globals.css             # Estilos globales Tailwind CSS
+│   ├── layout.tsx              # Layout raíz de la aplicación
+│   └── page.tsx                # Dashboard y panel de estado en producción
+├── lib/
+│   └── gemini.ts               # Cliente GenAI, validación de API Key y System Prompt
+├── types/
+│   └── chat.ts                 # Definición de tipos e interfaces TypeScript
+├── public/                     # Recursos estáticos
+├── .env.example                # Plantilla de variables de entorno
+├── .env.local                  # Variables locales (ignorado en git)
+├── .gitignore
+├── next.config.ts              # Configuración de Next.js y cabeceras CORS globales
+├── package.json
+├── tsconfig.json
+├── vercel.json                 # Configuración para despliegue en Vercel
+└── README.md
+```
 
-### 2. Chat del Agente de Ventas
-* **Método:** `POST /api/chat`
-* **Headers:** `Content-Type: application/json`
-* **Body:**
-  ```json
-  {
-    "message": "¿Cuánto vendimos de Camarón?",
-    "workspaceId": "ws_123",
-    "history": [],
-    "salesContext": {
-      "totalRevenue": 4500.0,
-      "totalSalesCount": 12,
-      "totalContado": 4000.0,
-      "totalPendiente": 500.0,
-      "averageTicket": 375.0,
-      "topProducts": [
-        {
-          "name": "Camarón",
-          "quantitySold": 10.0,
-          "unit": "kg",
-          "totalAmount": 2500.0,
-          "transactionCount": 5
-        }
-      ],
-      "targetProductMetrics": {
-        "name": "Camarón",
-        "totalUnits": 10.0,
+---
+
+## ⚙️ Variables de Entorno
+
+Configura estas variables en tu archivo `.env.local` (local) o en el panel de **Vercel Project Settings > Environment Variables** (producción):
+
+| Variable | Requerida | Valor por Defecto / Ejemplo | Descripción |
+| :--- | :---: | :--- | :--- |
+| `GEMINI_API_KEY` | **Sí** | `AIzaSyDfSu5...` | Clave de API de Google Gemini (Google AI Studio). |
+| `GEMINI_MODEL` | No | `gemini-3.5-flash-lite` | Identificador del modelo Gemini a utilizar. |
+| `PORT` | No | `3000` | Puerto para el servidor local. |
+
+---
+
+## 📡 Referencia de la API
+
+### 1. `GET /api/health`
+Comprueba el estado del servicio y si las credenciales de Gemini están configuradas.
+
+**Respuesta Exitosa (`200 OK`):**
+```json
+{
+  "status": "ok",
+  "service": "tienda-agent-api",
+  "timestamp": "2026-09-02T20:00:00.000Z",
+  "model": "gemini-3.5-flash-lite",
+  "geminiConfigured": true,
+  "environment": "production"
+}
+```
+
+---
+
+### 2. `POST /api/chat`
+Procesa la consulta del usuario sobre ventas e inventario, evalúa el contexto analítico y devuelve una respuesta estructurada.
+
+**Headers:**
+```http
+Content-Type: application/json
+```
+
+**Cuerpo de la Petición (Request Body):**
+```json
+{
+  "message": "¿Cuánto se vendió de Camarón Grande?",
+  "workspaceId": "ws_tienda_principal",
+  "history": [
+    { "role": "user", "text": "Hola, quiero revisar mis ventas" },
+    { "role": "model", "text": "¡Hola! Estoy listo para analizar tus ventas. ¿Qué deseas consultar?" }
+  ],
+  "salesContext": {
+    "totalRevenue": 5000.0,
+    "totalSalesCount": 10,
+    "totalContado": 4500.0,
+    "totalPendiente": 500.0,
+    "averageTicket": 500.0,
+    "topProducts": [
+      {
+        "name": "Camarón Grande",
+        "quantitySold": 15.5,
         "unit": "kg",
-        "totalMoney": 2500.0,
-        "avgPrice": 250.0,
-        "transactionCount": 5
+        "totalAmount": 3875.0,
+        "transactionCount": 6
       }
+    ],
+    "targetProductMetrics": {
+      "name": "Camarón Grande",
+      "totalUnits": 15.5,
+      "unit": "kg",
+      "totalMoney": 3875.0,
+      "avgPrice": 250.0,
+      "transactionCount": 6
     }
   }
-  ```
-* **Respuesta (200 OK):**
-  ```json
-  {
-    "reply": "Se han vendido 10.0 kg de Camarón...",
-    "dataMissing": null,
-    "isApproximate": false,
-    "suggestedActions": ["¿Cuál es el margen de ganancia?"],
-    "newInsight": {
-      "title": "Camarón es el producto estrella",
-      "content": "Representa más del 50% de las ventas.",
-      "type": "opportunity"
-    }
+}
+```
+
+**Respuesta Exitosa (`200 OK`):**
+```json
+{
+  "reply": "Se han vendido **15.5 kg** de **Camarón Grande**, generando un ingreso total de **$3,875.00** en 6 transacciones.",
+  "dataMissing": null,
+  "isApproximate": false,
+  "suggestedActions": [
+    "¿Cuál es el margen de ganancia del Camarón Grande?",
+    "¿Cuánto dinero hay pendiente por cobrar?"
+  ],
+  "newInsight": {
+    "title": "Camarón Grande es el líder",
+    "content": "Representa el 77.5% de los ingresos totales de la tienda en este periodo.",
+    "type": "opportunity"
   }
-  ```
+}
+```
+
+**Respuesta cuando faltan datos (Anti-Alucinación):**
+```json
+{
+  "reply": "No se encontraron registros de venta para **Salmón Noruego** en el periodo consultado. Para responderte necesitaría que se registren ventas de dicho producto en este espacio de trabajo.",
+  "dataMissing": "No se encontraron datos de ventas para el producto Salmón Noruego en el contexto actual.",
+  "isApproximate": false,
+  "suggestedActions": [
+    "¿Cuáles son los productos más vendidos?",
+    "Resumen de ventas de hoy"
+  ],
+  "newInsight": null
+}
+```
 
 ---
 
-## 📱 Conexión con la Aplicación Móvil
+## 💻 Desarrollo Local
 
-Una vez desplegado en Vercel, obtendrás una URL como:
-`https://tu-proyecto.vercel.app`
+1. **Instalar dependencias:**
+   ```bash
+   npm install
+   ```
 
-En la aplicación móvil Android:
-1. Abre la pantalla del **Asistente IA**.
-2. Toca el ícono de **Engrane / Configuración** en la esquina superior derecha.
-3. Ingresa tu URL de Vercel:
-   `https://tu-proyecto.vercel.app`
-4. ¡Listo! La app se comunicará directamente con tu backend en la nube sin necesidad de tener tu computadora encendida.
-# BackendApiAppTiendita
+2. **Configurar variables de entorno:**
+   Copia el archivo de ejemplo y coloca tu API Key:
+   ```bash
+   cp .env.example .env.local
+   ```
+
+3. **Iniciar servidor de desarrollo:**
+   ```bash
+   npm run dev
+   ```
+   La API estará disponible en `http://localhost:3000`.
+
+4. **Validación de código:**
+   ```bash
+   npm run lint   # Verifica que no haya errores de linter
+   npm run build  # Verifica la compilación de producción con TypeScript
+   ```
+
+---
+
+## ☁️ Despliegue en Vercel (Producción)
+
+Dado que este repositorio ya está vinculado a GitHub en [BackendApiAppTiendita](https://github.com/hectorProgrammer10/BackendApiAppTiendita.git):
+
+1. Ve a tu panel en [Vercel Dashboard](https://vercel.com/dashboard).
+2. Haz clic en **"Add New..." > "Project"**.
+3. Selecciona el repositorio **`hectorProgrammer10/BackendApiAppTiendita`**.
+4. Deja la configuración de framework en **Next.js** y Root Directory en `./`.
+5. En la sección **Environment Variables**, añade:
+   * `GEMINI_API_KEY`: Tu clave de API de Gemini (`AIzaSyDfSu5...`).
+   * `GEMINI_MODEL`: `gemini-3.5-flash-lite`.
+6. Haz clic en **Deploy**.
+
+Vercel compilará el proyecto y te asignará una URL de producción (por ejemplo: `https://backend-api-app-tiendita.vercel.app`).
+
+---
+
+## 📱 Vinculación con la Aplicación Móvil Android
+
+Una vez que tengas tu URL de Vercel:
+
+1. Abre **TiendaApp** en tu teléfono Android o emulador.
+2. Toca la tarjeta **"Asistente IA de Ventas"** en la pantalla principal.
+3. Toca el ícono de **Engrane (Ajustes)** en la esquina superior derecha.
+4. Escribe tu URL de producción:
+   ```text
+   https://backend-api-app-tiendita.vercel.app
+   ```
+5. Presiona **Guardar**.
+
+A partir de ese momento, el asistente inteligente responderá utilizando la API alojada en la nube con acceso directo a tu modelo Gemini Flash Lite.
