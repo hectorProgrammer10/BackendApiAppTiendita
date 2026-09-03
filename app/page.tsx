@@ -15,7 +15,7 @@ export default function Home() {
             </div>
             <p className="text-sm text-slate-400 mt-1">
               Microservicio de analítica de ventas y asistencia comercial impulsado por{" "}
-              <span className="font-semibold text-sky-400">Gemini 3.5 Flash Lite</span>.
+              <span className="font-semibold text-sky-400">Gemini</span>.
             </p>
           </div>
         </div>
@@ -26,7 +26,7 @@ export default function Home() {
               Modelo Configurado
             </h2>
             <p className="text-lg font-mono font-medium text-sky-300">
-              gemini-3.5-flash-lite
+              *****************
             </p>
             <p className="text-xs text-slate-500 mt-1">
               Máxima velocidad, bajo costo y control estricto anti-alucinaciones.
@@ -57,10 +57,10 @@ export default function Home() {
                 <span className="px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/20 text-emerald-400">
                   GET
                 </span>
-                <span className="text-slate-200">/api/health</span>
+                <span className="text-slate-200">********</span>
               </div>
               <a
-                href="/api/health"
+                href="*********"
                 className="text-xs text-sky-400 hover:text-sky-300 underline font-medium"
                 target="_blank"
               >
@@ -73,7 +73,7 @@ export default function Home() {
                 <span className="px-2 py-0.5 rounded text-xs font-bold bg-blue-500/20 text-blue-400">
                   POST
                 </span>
-                <span className="text-slate-200">/api/chat</span>
+                <span className="text-slate-200">*****************</span>
               </div>
               <p className="text-xs text-slate-400">
                 Recibe la consulta del comerciante, historial de conversación y contexto de ventas precalculado.
@@ -85,11 +85,8 @@ export default function Home() {
         <div className="bg-slate-950/50 border border-slate-800/60 rounded-xl p-4 text-xs text-slate-400 space-y-1">
           <p className="font-semibold text-slate-300">Integración con TiendaApp Móvil:</p>
           <p>
-            Configura la URL generada por Vercel (ej.{" "}
-            <code className="bg-slate-800 px-1.5 py-0.5 rounded text-slate-200">
-              https://tu-proyecto.vercel.app
-            </code>
-            ) en el diálogo de ajustes de la pantalla de Asistente IA en la aplicación móvil.
+
+             Asistente IA en la aplicación móvil.
           </p>
         </div>
       </main>
