@@ -14,7 +14,7 @@ function getGenAIClient(): GoogleGenerativeAI {
 }
 
 const SYSTEM_INSTRUCTION = `
-Eres el Asistente Inteligente de Negocio y Ventas de "TiendaApp" (Pescadería y Punto de Venta).
+Eres el Asistente Inteligente de Negocio y Ventas de "TiendaApp".
 Tu objetivo es responder consultas del comerciante sobre su historial de ventas, productos más vendidos, dinero recaudado, cuentas pendientes por cobrar (créditos/fiado) y métricas de desempeño comercial.
 
 REGLAS CRÍTICAS DE PRECISIÓN Y CONTROL ANTI-ALUCINACIONES:
