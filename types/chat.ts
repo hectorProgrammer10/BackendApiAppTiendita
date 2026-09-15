@@ -9,15 +9,21 @@ export interface ProductStat {
   unit: string;
   totalAmount: number;
   transactionCount: number;
+  quantityPending?: number;
+  pendingAmount?: number;
+  pendingTransactionCount?: number;
 }
 
 export interface TargetProductMetrics {
   name: string;
-  totalUnits: number;
+  totalUnitsSold: number;
+  totalMoneySold: number;
+  totalUnitsPending: number;
+  totalMoneyPending: number;
   unit: string;
-  totalMoney: number;
   avgPrice: number;
   transactionCount: number;
+  pendingTransactionCount: number;
 }
 
 export interface SalesMetricsContext {
@@ -25,6 +31,7 @@ export interface SalesMetricsContext {
   totalSalesCount: number;
   totalContado: number;
   totalPendiente: number;
+  totalPendingSalesCount?: number;
   averageTicket: number;
   topProducts: ProductStat[];
   targetProductMetrics?: TargetProductMetrics | null;
